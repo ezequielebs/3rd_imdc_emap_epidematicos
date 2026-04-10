@@ -1,177 +1,118 @@
-<p align="center">
-  <img src="img/home_imdc.svg" alt="Sprint Planning" width="800" height="200">
-</p>
+# 2026 3rd Infodengue-Mosqlimate Dengue Challenge (IMDC)
+
+## Team and Contributors
+
+Epidemáticos - School of Applied Mathematics - Getulio Vargas Foundation (FGV/EMAp)
+
+- [Eduardo Adame, M.Sc.](https://github.com/adamesalles)
+- [Ezequiel Braga, M.Sc.](https://github.com/ezequielebs)
+- [Isaque Pim, Ph.D.](https://github.com/isaquepim)
+
+## Summary
 
 
-This tutorial provides step-by-step guidance on how to participate in the challenge. We assume here that you are already familiar with GitHub and how to use it. If you're not, please take a look at [this tutorial](https://docs.github.com/en/get-started/start-your-journey/hello-world).
-
-## Registering in the Mosqlimate Platform
-The Mosqlimate platform is where all models and predictions are stored, alongside with the data used for the modeling. It provides a [REST API](https://api.mosqlimate.org/api/docs) that is completely language agnostic, for accessing the data as well as registering models. It is fully documented but requires some familiarity with APIs to use. In addition, we make available a a simplified client library named [Mosqlient library](https://github.com/Mosqlimate-project/mosqlimate-client), available for Python and R (using `reticulate`), that simplifies the interaction with the platform.
-
-The Mosqlimate Platform is responsible for all interactions with the the participants of the challenge. Therefore, to participate in this IMDC, the first step we require from you, as team leader, is to register your team to the Mosqlimate platform (There is not cost associate with this membership). In order to do this, simply go to [mosqlimate.org](https://mosqlimate.org/), click on the "Login" in the top right corner of the page, and follow the instructions. Please use your GitHub or GitLab account to create your platform account. Otherwise, you will not be able to register your model, as it must be linked to a repository in your GitHub or GitLab account. Once you create your Mosqlimate profile, you are set to follow the steps below.
-
-![image](img/profile_page.png)
-
-After creating your account, go to the “Auth” section to verify whether it is linked to GitHub or GitLab. This step is required in order to register your model.
-
-![image](img/git_connect.png)
-
-This section also displays your API key. You need it to download data using the API or submit forecasts to the platform.
-
-You can access the challenge data via the API. However, note that the IMDC forecasts are based on probable cases; therefore, when using the API, you should use the `casprov` column from the Infodengue endpoint. **To simplify access to nationwide data and provide additional datasets, the data is also available on an FTP server. More details can be found [here](https://sprint.mosqlimate.org/data/).**
 
 
-Now let's move on to setting up the GitHub repository for your submission.
+## Repository Structure:
 
-## Using the GitHub template for the IMDC submission
-This github repository should be used as a template for developing your submission for the 2026 IMDC. To get the details about the challenge, please read carefully [IMDC rules](https://sprint.mosqlimate.org/instructions/).
+<!-- - `data/`
+  1. `1_raw/` (raw data)
+  2. `2_inter/` (intermediate data processed)
+  3. `3_primary/` (primary data to be used to train the model)
+  4. `4_model_output/` (predictions from the model without post-processing)
+  5. `5_predictions/` (predictions to be submitted to the competition)
+- `dataprep/` (notebooks to process the data)
+  1. `1_enso_interpolation.ipynb`
+  2. `2_geographic_uf.ipynb`
+  3. `3_join_aggregate_data.ipynb`
+- `train_model/` (notebooks to train the model)
+  1. `train.ipynb`
+  2. `SprintModels/` (trained models)
+- `forecast_evaluation/` (notebooks to evaluate the model)
+  1. `evaluate.ipynb`
+- `post_processing/` (notebooks to post-process the predictions)
+  1. `post_processing.ipynb`
+  2. `submission.ipynb`
+- `run_pipeline.py` (script to run the notebooks in the correct order to reproduce the results)
+- `pyproject.toml` (project dependencies)
+- `uv.lock` (dependency lock file) -->
 
-If you have a GitHub account, you can create a new public repository clicking the (+) button on the top right of this page. In the following page, you can create the repo under your user as shown below, make sure to use our template as indicated by the red arrow in the figure below.
+## Libraries and dependencies
 
- <span style="color:red"><strong>You should name your repository following this pattern: 3rd_imdc_{institution}_{team_name}
-* All letters must be lowercase.
-* In {institution}, include only the acronym of the team leader’s institution.
-* In {team_name}, you may choose any name you like, but it must contain only lowercase letters </strong></span>!
+<!-- This project uses `uv` for dependency management. The main dependencies are defined in `pyproject.toml`, yet,
+when it comes to training the model, the main library was `autogluon`, while `polars` and `pandas` were used for data manipulation. -->
 
-![create repo](/img/create_repo.png)
+## Data and Variables
 
+<!-- The project uses the following datasets:
+- **`dengue.csv.gz`**: Dengue cases by municipalities and week
+- **`ocean_climate_oscillations.csv.gz`**: Climate indices including ENSO (El Niño-Southern Oscillation)
+- **`geodata_uf.geojson`**: Shapefiles for Brazilian states -->
 
-> <strong> Important: </strong>Don't forget to set it as a public repository. In addition, please ensure your model repository includes a clear and complete `README.md` file containing the following information:
->
-> <strong> 1. Team and Contributors</strong> 
->* Name of your team.
->* Names of all contributors and their affiliations >(universities/institutions, if applicable).
->
->
-><strong> 2. Repository Structure </strong>
->
->A brief description of the contents and purpose of >each folder and file in the repository.
->
-><strong> 3. Libraries and Dependencies </strong>
->
->A list of all libraries and packages used to process the data and train your model.
->
-><strong> 4. Data and Variables </strong>
->
->* Which datasets and variables were used?
->* How was the data pre-processed?
->* How were the variables selected? Please point to the relevant part of the code.
->
-><strong>5. Model Training </strong> 
->
->* Description of how the model was trained. If applicable, describe any hyperparameter optimization techniques used.
->
->* Please specify where the code for training and generating forecasts is located, and provide instructions on how to run it.
->
-><strong> 5. Data Usage Restriction </strong>
->
->Describe how you handled the requirement of using only data up to EW 25 of the current year to generate predictions from EW 41 of the same year to EW 40 of the next year.
->
-><strong> 6. Predictive Uncertainty </strong> 
-How are your prediction intervals computed? 
->
-><strong> 7. References </strong>
->
->If your model is based on a published or preprint (e.g., arXiv) paper, include the citation, DOI, and link.
->
-><strong> An illustrative example from the previous edition is available [here](https://mosqlimate.org/davibarreira/jbd-mosqlimate-sprint).</strong>
+### Processed Variables:
+<!-- The ENSO data was interpolated to obtain values for the same weeks as the dengue cases.
+The shapefile was used to obtain latitude and longitude coordinates to represent each state.
+We aggregated the dengue cases by state and week, and joined the ENSO data, while the 
+longitude and latitude were used as static features.
+We also added the log of the dengue cases to the model as a covariate.
+
+The variables were selected by evaluating model performance on the validation set
+for different combinations of variables. The best model was the one that used the ENSO index as a covariate. -->
 
 
-## Step-by-step tutorial on how to register your model
+## Model Training
 
-Now that your repository is set up, and after providing the required information about your model in the repository README, make sure that all code related to your model is committed to it. <span style="color:red"><strong>If you want to register more than one model, be sure to repeat the step above for each one, so that they are in separate repositories.</strong></span> The video tutorial for model submission is available [here](https://www.youtube.com/watch?v=0K3RfJhOYyM&list=PLh4FLfhFN5irN_IoZvy4c3cf4ZWrSWrwF&index=4).
+<!-- The model used was Chronos, a probabilistic time-series forecasting model from Amazon, more specifically,
+the `bolt_small` variant. We used the `autogluon` library,
+which provides a high-level interface for training and evaluating time-series models.
+The models were evaluated using the WQL (Weighted Quantile Loss) metric.
 
-The model is registered through the platform’s interface. The first step, assuming you are already logged into the platform, is to click on the `Models` section in the navigation bar. This section is indicated by the arrow in the figure below:
+The training used two Chronos configurations with different fine-tuning strategies:
+1. **Fine-tuned model**: `fine_tune=True` - model weights are updated during training
+2. **Zero-shot model**: `fine_tune=False` - model uses pre-trained weights without fine-tuning
 
-![](/img/step1_sub_model.png)
+While developing the model, we have tested different configurations, including different models.
 
-Next, you will be directed to a page displaying all models registered on the platform. To register a new model, simply click the green `+ Models` button indicated by the arrow in the figure below:
+The training code is available in the `train_model/train.ipynb` file, and the post-processing
+code is available in the `post_processing/post_processing.ipynb` file. -->
 
-![](/img/step2_sub_model.png)
+## Post-processing
+<!-- After training, `post_processing.ipynb` is used to post-process the predictions to
+align them with the competition requirements. -->
 
-After clicking it, a new tab will open showing a list of your GitHub/GitLab repositories.
+### Data Usage Restrictions
 
-If you have not connected your GitHub/GitLab account correctly, a message will appear indicating that you need to complete the connection. In this case, simply follow the instructions provided.
+<!-- The competition required using only data up to Epidemiological Week (EW) 25 of the current year to
+generate predictions from EW 41 of the same year to EW 40 of the next year.
+To deal with this, our model predicts the entire time-series starting from EW 26 until EW 40 of the next year,
+and then we post-process the data to cover only the required period. -->
 
-![](/img/step3_sub_model_p1.png)
+### Predictive Uncertainty
+<!-- The Chronos model within `autogluon` is already trained to provide quantile predictions,
+yet, the model is tuned for quantiles `[0.1,0.2,0.5,0.8,0.9]`,
+which did not match the requirements of the competition. Hence, we used interpolation and 
+extrapolation to obtain the quantiles `[0.05,0.1,0.2,0.5,0.8,0.9,0.95]`, in order to
+produce the required interval predictions.
 
-If your GitHub/GitLab account is already connected, the screen below will appear with a list of your repositories. Locate the repository containing your model’s code. When you hover over it, a blue arrow pointing to the right will appear, indicating that it can be selected. Click on it to proceed to the next step.
+During post-processing, we sorted quantile predictions to ensure monotonicity,
+and we set predictions to zero when the value was negative. -->
 
-![](/img/step3_sub_model_p2.png)
+## References
 
-In this step, fill the temporal resolution (field `time resolution`) and select the category (field `model_category`) that best describes your model’s methodology. Models for the challenge **must have a weekly temporal resolution**. Finally, indicate that your model will participate in IMDC 2026 and click continue.
+<!-- @article{ansari2024chronos,
+  title={Chronos: Learning the language of time series},
+  author={Ansari, Abdul Fatir and Stella, Lorenzo and Turkmen, Caner and Zhang, Xiyuan and Mercado, Pedro and Shen, Huibin and Shchur, Oleksandr and Rangapuram, Syama Sundar and Arango, Sebastian Pineda and Kapoor, Shubham and others},
+  journal={arXiv preprint arXiv:2403.07815},
+  year={2024}
+}
 
-![](/img/step4_sub_model.png)
-
-The next page allows you to review the information provided. If everything is correct, simply click `Confirm`.
-
-**Done! Your model has been successfully submitted. ;)**
-
-After submission, the README from your repository will appear in the README section of model page, as shown in the figure below:
-
-![](/img/view_readme_from_model.png)
-
-The predictions section will initially be empty, as shown below. In the next step, you will learn how to submit forecasts for your model using Python or R.
-
-![](/img/view_predictions_from_model.png)
-
-## Step-by-step tutorial on how to prepare your submission
-
-This guide walks you through how to format and submit your forecasting models to the API. You can send your data either as a standard JSON payload or by using the official Python package (**recommended**).
-
-Below, we provide examples using the `mosqlient` package. For details on submitting data via the standard JSON payload, see the documentation [here](https://api.mosqlimate.org/docs/registry/POST/predictions/). 
-
-### Using `mosqlient package`: 
-
-**Checking for minimal configuration requirements on your operating system**
-
-Since you are going to use a python library to submit your work, before installing it you need to make sure that you OS has a working Python installation.
-
-On a debian-based Linux distribution(Ubuntu, Mint, etc.), just run the following command:
-
-```bash
-sudo apt install python3-dev jupyter python3-venv python3-pip
-```
-
-On Mac OS (using homebrew):
-```
-# Install Python and Jupyter
-brew install python
-pip3 install jupyter
-
-# Install virtual environment and development headers
-pip3 install virtualenv
-```
-
-**Installing the Mosqlient library**
-
-To install the library for Python, from the OS terminal type: 
-
-```bash
-$ pip install -U mosqlient
-```
-
-Ensure your Python version is 3.10 or higher to install the latest version of the package (2.1).
-
-for R:
-
-```R
-> library(reticulate)
-> py_install("mosqlient")
-```
-
-You need to already have the `reticulate` package installed.
-
-**Starting your work!**
-We prepared a couple of demo Jupyter notebooks to get you started.  In you local computer make sure you have Python 3.10 or higher and Jupyter installed.
-
-If you are an R user, make sure you have the R kernel installed in your Jupyter notebook. you can install it by running the following command **in an R terminal**:
-
-```R
-> install.packages("IRkernel")
-> IRkernel::installspec()
-```
-
-After this you can just open the notebooks indicated below and follow the instructions in them.
+@inproceedings{shchur2023autogluon,
+  title={AutoGluon--TimeSeries: AutoML for probabilistic time series forecasting},
+  author={Shchur, Oleksandr and Turkmen, Ali Caner and Erickson, Nick and Shen, Huibin and Shirkov, Alexander and Hu, Tony and Wang, Bernie},
+  booktitle={International Conference on Automated Machine Learning},
+  pages={9--1},
+  year={2023},
+  organization={PMLR}
+} -->
 
 Follow the [R demo rmd](/Demo%20Notebooks/R%20demo.Rmd) or [Python demo notebook](/Demo%20Notebooks/Python%20demo.ipynb) to learn of the essential steps you must follow to complete a submission of your work. For more details check the [mosqlient documentation](https://mosqlimate-client.readthedocs.io/en/latest/tutorials/API/registry/).  Video tutorials for prediction submission are available here: one for [R](https://www.youtube.com/watch?v=57hM-dVY4hA&list=PLh4FLfhFN5irN_IoZvy4c3cf4ZWrSWrwF&index=3) and another for [Python](https://www.youtube.com/watch?v=YorYQ6phAfw&list=PLh4FLfhFN5irN_IoZvy4c3cf4ZWrSWrwF&index=2). If you run into dificulties, please reach out fo help at our [discord server](https://discord.gg/yqtgW4TC). 
