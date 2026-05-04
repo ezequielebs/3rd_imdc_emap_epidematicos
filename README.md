@@ -6,6 +6,7 @@ Epidemáticos - School of Applied Mathematics - Getulio Vargas Foundation (FGV/E
 
 - [Eduardo Adame, M.Sc.](https://github.com/adamesalles)
 - [Ezequiel Braga, M.Sc.](https://github.com/ezequielebs)
+- [Iara Cristina, M.Sc.](https://github.com/iaracastro)
 - [Isaque Pim, Ph.D.](https://github.com/isaquepim)
 
 ## Summary
