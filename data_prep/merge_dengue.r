@@ -3,7 +3,7 @@ library(lubridate)
 library(aweek)
 
 dengue <- read_csv("raw_data/dengue.csv.gz")
-climate <- read_csv("raw_data/climate.csv.gz")
+climate <- read_csv("processed_data/climate/climate.csv.gz")
 env_vars <- read_csv("raw_data/environ_vars.csv.gz")
 ocean <- read_csv("raw_data/ocean_climate_oscillations.csv.gz")
 pop <- read_csv("raw_data/datasus_population_2001_2025.csv.gz")
@@ -14,14 +14,11 @@ dengue <- dengue %>%
   mutate(year = year(date))
 climate <- climate |> dplyr::select(-date)
 ocean <- ocean %>%
-  mutate(epiweek = 
-    sub(
-      "-\\d+$", 
-      "", 
-      date2week(date, week_start = "Sunday")
+  mutate(
+    epiweek = as.integer(
+      paste0(epiyear(date), sprintf("%02d", epiweek(date)))
     )
-  ) %>%
-  mutate(epiweek = as.integer(gsub("-W", "", epiweek))) |> 
+  ) |> 
   dplyr::select(-date)
 pop <- rbind(
   pop,
