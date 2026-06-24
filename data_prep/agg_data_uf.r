@@ -10,7 +10,7 @@ mode_stat <- function(x) {
 }
 
 dengue_uf <- dengue_merged %>%
-  group_by(uf, uf_code, epiweek) %>%
+  group_by(uf, uf_code, date, epiweek) %>%
   summarise(
     cases = sum(casos, na.rm = TRUE),
     temp_min_mean = mean(temp_min, na.rm = TRUE),
@@ -46,7 +46,7 @@ dengue_uf <- dengue_merged %>%
   ungroup()
 
 chikungunya_uf <- chikungunya_merged %>%
-  group_by(uf, uf_code, epiweek) %>%
+  group_by(uf, uf_code, date, epiweek) %>%
   summarise(
     cases = sum(casos, na.rm = TRUE),
     temp_min_mean = mean(temp_min, na.rm = TRUE),
