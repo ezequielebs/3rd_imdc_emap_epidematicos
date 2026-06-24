@@ -1,4 +1,3 @@
-arimax model sel · YML
 name: SARIMAX model selection
  
 # Manual-only: trigger from the Actions tab. Runs sarimax/run_states.R, which
