@@ -61,7 +61,7 @@ jobs:
           STATES: ${{ inputs.states }}
           RESET_CHECKPOINT: ${{ inputs.reset_checkpoint }}
           NPATHS: ${{ inputs.npaths }}
-        run: Rscript sarimax/run_states.R
+        run: Rscript sarimax/src/run_states.R
  
       - name: Commit and push results
         run: |
