@@ -54,6 +54,7 @@ jobs:
             any::readr
             any::scoringutils
             any::pbapply
+            any::tidyverse
           needs: NULL
  
       - name: Run model selection
