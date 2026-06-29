@@ -1,3 +1,14 @@
+# merge_dengue.r — Step 2 of the data-prep pipeline (dengue branch).
+#
+# Joins the raw dengue case series (geocode x epiweek, with train/target
+# split indicators already provided by Mosqlimate) against climate,
+# environmental (Köppen climate classification, biome), ocean-climate index
+# (ENSO/IOD/PDO), and population covariates. Population is extrapolated one
+# year forward (to 2026) by repeating each geocode's 2025 value, since
+# official population estimates lag the current year. Writes
+# processed_data/dengue/dengue_merged.csv.gz.
+#
+# Run after prep_climate.r; followed by data_prep/handle_na.r.
 library(tidyverse)
 library(lubridate)
 library(aweek)
@@ -9,7 +20,8 @@ ocean <- read_csv("raw_data/ocean_climate_oscillations.csv.gz")
 pop <- read_csv("raw_data/datasus_population_2001_2025.csv.gz")
 map_regional_health <- read_csv("raw_data/map_regional_health.csv")
 
-# Prepare data to merge
+# Prepare data to merge: derive join keys and drop columns that would
+# otherwise collide across tables (each table keeps only one `date`).
 dengue <- dengue %>%
   mutate(year = year(date))
 climate <- climate |> dplyr::select(-date)
@@ -31,7 +43,8 @@ pop <- rbind(
   }) %>% bind_rows()
 )
 
-# Merge data
+# Merge data: left-join everything onto the dengue case series so every
+# case row is preserved even if a covariate table is missing that key.
 dengue_merged <- dengue %>%
   left_join(climate, by = c("epiweek", "geocode")) %>%
   left_join(env_vars, by = c("geocode", "uf_code")) %>%

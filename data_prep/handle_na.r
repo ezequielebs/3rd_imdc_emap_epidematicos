@@ -1,3 +1,15 @@
+# handle_na.r — Step 3 of the data-prep pipeline.
+#
+# The only systematic missingness left after merge_dengue.r /
+# merge_chikungunya.r is in the ocean-climate indices (ENSO/IOD/PDO), which
+# are reported on the column's own irregular schedule and can have gaps once
+# joined onto the weekly epiweek grid. This script linearly interpolates
+# those three columns over time (`zoo::na.approx`, leaving any leading/
+# trailing NA untouched via `na.rm = FALSE`) and overwrites the merged
+# tables in place.
+#
+# Run after merge_dengue.r / merge_chikungunya.r; followed by
+# data_prep/agg_data_uf.r.
 library(zoo)
 library(tidyverse)
 library(sf)
