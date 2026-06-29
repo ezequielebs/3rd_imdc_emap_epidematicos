@@ -38,8 +38,8 @@ def _add_log_cases_lag52(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def load_state(state: str, data_dir: Path) -> pd.DataFrame:
-    path = data_dir / f"dengue_{state}_agg.csv.gz"
+def load_state(state: str, data_dir: Path, disease: str = "dengue") -> pd.DataFrame:
+    path = data_dir / f"{disease}_{state}_agg.csv.gz"
     df = pd.read_csv(path, parse_dates=["date"])
     df = df.sort_values("date").reset_index(drop=True)
     df = _add_log_cases_lag52(df)

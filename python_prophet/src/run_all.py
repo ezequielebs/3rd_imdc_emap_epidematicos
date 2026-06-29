@@ -23,8 +23,9 @@ import pandas as pd
 
 SRC_DIR = Path(__file__).parent
 ROOT_DIR = SRC_DIR.parent.parent
-DATA_DIR = ROOT_DIR / "processed_data" / "dengue"
-RESULTS_DIR = SRC_DIR.parent / "results"
+DISEASE = os.environ.get("DISEASE", "dengue")
+DATA_DIR = ROOT_DIR / "processed_data" / DISEASE
+RESULTS_DIR = SRC_DIR.parent / "results" / DISEASE
 PRED_DIR = RESULTS_DIR / "predictions"
 METRICS_DIR = RESULTS_DIR / "metrics"
 CHECKPOINT_FILE = RESULTS_DIR / "concluded_states.csv"
@@ -37,7 +38,7 @@ from model import compute_metrics, fit_and_forecast, validate_output
 def process_state(state: str) -> dict:
     t0 = time.time()
     try:
-        df = load_state(state, DATA_DIR)
+        df = load_state(state, DATA_DIR, DISEASE)
     except FileNotFoundError:
         print(f"[SKIP] {state}: data file not found")
         return {"state": state, "status": "skipped"}
