@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from epiweeks import Week, Year
 
 STATES = [
     "AC", "AL", "AM", "AP", "BA", "CE", "DF", "GO", "MA", "MG",
@@ -51,7 +52,19 @@ TARGET_START_DATES = {
     3: "2024-10-06",  # EW41 2024
     4: "2025-10-05",  # EW41 2025
 }
-N_TARGET_WEEKS = 52  # EW41 → EW40 of following year
+
+
+def _n_target_weeks(start: pd.Timestamp) -> int:
+    """
+    Number of epiweeks spanning EW41 of `start`'s epiweek-year through EW40 of
+    the following year (inclusive). This is normally 52, but some years have
+    53 epiweeks (e.g. 2025), which pushes the season to 53 weeks. Hardcoding
+    52 silently drops the final week, which the Mosqlimate API then rejects
+    as a missing date.
+    """
+    start_week = Week.fromdate(start.date())
+    weeks_left_in_start_year = Year(start_week.year).totalweeks() - start_week.week + 1
+    return weeks_left_in_start_year + 40  # ... through EW40 of the next year
 
 REGRESSORS = [
     "temp_med_mean_lag4",
@@ -107,9 +120,10 @@ def load_city(geocode: int, data_dir: Path, disease: str = "dengue") -> pd.DataF
 
 
 def get_target_dates(fold: int) -> pd.DatetimeIndex:
-    """Return the 52 weekly Sunday dates for a validation fold."""
+    """Return the weekly Sunday dates (EW41 → EW40 of the following year) for a validation fold."""
     start = pd.Timestamp(TARGET_START_DATES[fold])
-    return pd.date_range(start=start, periods=N_TARGET_WEEKS, freq="7D")
+    n_weeks = _n_target_weeks(start)
+    return pd.date_range(start=start, periods=n_weeks, freq="7D")
 
 
 def _fill_missing_regressors(
