@@ -1,4 +1,4 @@
-"""Load and split processed dengue data for each state and validation fold."""
+"""Load and split processed dengue/chikungunya data for states and cities."""
 
 from pathlib import Path
 
@@ -10,6 +10,39 @@ STATES = [
     "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO",
     "RR", "RS", "SC", "SE", "SP", "TO",
 ]
+
+# Dengue Optional Challenge 1 cities (geocode → state)
+DENGUE_CITIES: dict[int, str] = {
+    2931350: "BA",  # Teixeira de Freitas
+    2933307: "BA",  # Vitória da Conquista
+    2302503: "CE",  # Brejo Santo
+    3119401: "MG",  # Coronel Fabriciano
+    3549805: "SP",  # São José do Rio Preto
+    3541406: "SP",  # Presidente Prudente
+    1200401: "AC",  # Rio Branco
+    1200203: "AC",  # Cruzeiro do Sul
+    1716109: "TO",  # Paraíso do Tocantins
+    4113700: "PR",  # Londrina
+    4103701: "PR",  # Cambé
+    4104808: "PR",  # Cascavel
+    5201405: "GO",  # Aparecida de Goiânia
+    5102637: "MT",  # Campo Novo do Parecis
+    5215231: "GO",  # Novo Gama
+}
+
+# Chikungunya Optional Challenge 3 cities
+CHIKUNGUNYA_CITIES: dict[int, str] = {
+    2211001: "PI",  # Teresina
+    2931350: "BA",  # Teixeira de Freitas
+    3143302: "MG",  # Montes Claros
+    3119401: "MG",  # Coronel Fabriciano
+    1721000: "TO",  # Palmas
+    1716109: "TO",  # Paraíso do Tocantins
+    4104808: "PR",  # Cascavel
+    4219507: "SC",  # Xanxerê
+    5103403: "MT",  # Cuiabá
+    5102637: "MT",  # Campo Novo do Parecis
+}
 
 # First Sunday of each validation target season (EW41 of cutoff year)
 TARGET_START_DATES = {
@@ -28,6 +61,15 @@ REGRESSORS = [
     "log_cases_lag52",   # same epiweek last year (log1p-scaled)
 ]
 
+# City files use different column names (no _mean aggregation suffix, no pre-computed lags)
+CITY_REGRESSORS = [
+    "temp_med_lag4",
+    "precip_med_lag4",
+    "enso",
+    "pdo",
+    "log_cases_lag52",
+]
+
 
 def _add_log_cases_lag52(df: pd.DataFrame) -> pd.DataFrame:
     """Add log1p(cases) shifted by 52 weeks (same-epiweek last year)."""
@@ -42,6 +84,24 @@ def load_state(state: str, data_dir: Path, disease: str = "dengue") -> pd.DataFr
     path = data_dir / f"{disease}_{state}_agg.csv.gz"
     df = pd.read_csv(path, parse_dates=["date"])
     df = df.sort_values("date").reset_index(drop=True)
+    df = _add_log_cases_lag52(df)
+    return df
+
+
+def load_city(geocode: int, data_dir: Path, disease: str = "dengue") -> pd.DataFrame:
+    """Load city-level data, computing lag4 climate features and log_cases_lag52."""
+    path = data_dir / "sel_cities" / f"{disease}_{geocode}.csv.gz"
+    df = pd.read_csv(path, parse_dates=["date"])
+    df = df.sort_values("date").reset_index(drop=True)
+    # Normalise case column to match state pipeline
+    df = df.rename(columns={"casos": "cases"})
+    # Forward-fill sporadic NaN in slowly-varying climate indices
+    for col in ["enso", "iod", "pdo", "temp_med", "precip_med"]:
+        if col in df.columns:
+            df[col] = df[col].ffill().bfill()
+    # Compute lag4 climate regressors (not pre-computed in city files)
+    df["temp_med_lag4"] = df["temp_med"].shift(4)
+    df["precip_med_lag4"] = df["precip_med"].shift(4)
     df = _add_log_cases_lag52(df)
     return df
 
