@@ -1,5 +1,11 @@
 # SARIMAX Models — Dengue & Chikungunya (Municipality Level)
 
+**GitHub repository:** [EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_muni](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_muni)
+
+**Related repositories:**
+- [EzequielEBS/3rd_imdc_emap_epidematicos_prophet](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_prophet) — Prophet models (state & city level)
+- [EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_state](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_state) — SARIMAX state-level models
+
 Code in this folder fits, selects, and submits the city-level SARIMAX models used for this challenge entry, for a fixed set of focal cities defined in `cities_dengue` (15 geocodes) and `cities_chikungunya` (10 geocodes) — these lists are repeated in `src/model_sel.r`, `src/fit.r`, and `src/sub_pred.r`. It reads the per-city files produced by `data_prep/sel_cities.r` + `data_prep/summarise_sel_cities.r` (`processed_data/dengue/sel_cities/dengue_<geocode>_agg.csv.gz`, `processed_data/chikungunya/sel_cities/chikungunya_<geocode>_agg.csv.gz`) and writes everything under `sarimax/results/`.
 
 ## Files
@@ -22,21 +28,21 @@ From the repository root, with R and the packages listed in the root README's "L
 # Training / model selection for every focal city, both diseases. Safe to
 # interrupt and re-run: already-finished cities are skipped via
 # results/concluded_cities_*.csv.
-source("sarimax/src/model_sel.r")
+source("src/model_sel.r")
 
 # Refit the winning model per city, retry on warnings/errors, and generate
 # the 4 forecast windows. Logs warnings/errors to results/metrics/warnings_*.csv.
-source("sarimax/src/fit.r")
+source("src/fit.r")
 
 # Submit the forecasts to Mosqlimate (see "Credentials" below).
-source("sarimax/src/sub_pred.r")
+source("src/sub_pred.r")
 ```
 
 To experiment with a single city without running the full loop, call `run_model_selection()` directly after sourcing `src/utils.r` and `src/model_sel.r`'s function definition, e.g.:
 
 ```r
-source("sarimax/src/utils.r")
-source("sarimax/src/model_sel.r")  # defines run_model_selection(); the script's
+source("src/utils.r")
+source("src/model_sel.r")  # defines run_model_selection(); the script's
                                     # own loop will also start running unless you
                                     # source only the function definition block
 concluded_cities <- data.frame(city = character(0))

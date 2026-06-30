@@ -1,5 +1,11 @@
 # SARIMAX Models — Dengue & Chikungunya (State Level)
 
+**GitHub repository:** [EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_state](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_state)
+
+**Related repositories:**
+- [EzequielEBS/3rd_imdc_emap_epidematicos_prophet](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_prophet) — Prophet models (state & city level)
+- [EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_muni](https://github.com/EzequielEBS/3rd_imdc_emap_epidematicos_sarimax_muni) — SARIMAX municipality-level models
+
 Code in this folder fits, selects, and submits the state-level SARIMAX models used for this challenge entry. It reads the per-state files produced by `data_prep/agg_data_uf.r` (`processed_data/dengue/dengue_<UF>_agg.csv.gz`, `processed_data/chikungunya/chikungunya_<UF>_agg.csv.gz`) and writes everything under `sarimax/results/`.
 
 ## Files
@@ -22,20 +28,20 @@ From the repository root, with R and the packages listed in the root README's "L
 # Training / model selection for every state (and focal city), both diseases.
 # Long-running (grid search x 26 states x 2 diseases). Safe to interrupt and
 # re-run: already-finished states are skipped via results/concluded_states_*.csv.
-source("sarimax/src/model_sel.r")
+source("src/model_sel.r")
 
 # Refit the winning model per state and generate the 4 forecast windows.
-source("sarimax/src/fit.r")
+source("src/fit.r")
 
 # Submit the forecasts to Mosqlimate (see "Credentials" below).
-source("sarimax/src/sub_pred.r")
+source("src/sub_pred.r")
 ```
 
 To experiment with a single state without running the full loop, call `run_model_selection()` directly after sourcing `src/utils.r` and `src/model_sel.r`'s function definition, e.g.:
 
 ```r
-source("sarimax/src/utils.r")
-source("sarimax/src/model_sel.r")  # defines run_model_selection(); the script's
+source("src/utils.r")
+source("src/model_sel.r")  # defines run_model_selection(); the script's
                                     # own loop will also start running unless you
                                     # source only the function definition block
 concluded_states <- data.frame(state = character(0))
