@@ -212,3 +212,7 @@ __marimo__/
 README_files/
 README.html
 */README.html
+# uv / Python project
+python_prophet/.venv/
+python_prophet/__pycache__/
+python_prophet/src/__pycache__/
